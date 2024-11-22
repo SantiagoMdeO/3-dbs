@@ -6,15 +6,14 @@ from model import Post, PostUpdate
 
 router = APIRouter()
 
-# Create a new post
-@router.post("/", response_description="Create a new post", status_code=status.HTTP_201_CREATED, response_model=Post)
+@router.post("/", response_description="Post a new post", status_code=status.HTTP_201_CREATED)
 def create_post(request: Request, post: Post = Body(...)):
+    print("this probably doesnt execute\n")
     post = jsonable_encoder(post)
     new_post = request.app.database["posts"].insert_one(post)
-    created_post = request.app.database["posts"].find_one(
-        {"_id": new_post.inserted_id}
-    )
+    created_post = request.app.database["posts"].find_one({"_id": new_post.inserted_id})
     return created_post
+
 
 # Get all posts with optional filters
 @router.get("/", response_description="List all posts", response_model=List[Post])
