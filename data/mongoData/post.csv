@@ -1,0 +1,4 @@
+post_id,user_id,content,visibility_status,created_at,likes,comments
+8e1b92d2-634e-4b5f-8d53-2fcb62e0a75c,0x1,"Just had the best coffee ever! ☕","public","2024-11-22T10:30:00Z",120,"c1234567-abcd-1234-abcd-1234567890ab;c9876543-abcd-1234-abcd-0987654321ba"
+7f2b91c2-7ed3-4d63-bd24-9fb2e913987f,0xB3,"Loving the new album from my favorite artist! 🎶","friends","2024-11-21T15:45:00Z",75,"c2345678-abcd-1234-abcd-234567890123;c3456789-abcd-1234-abcd-345678901234"
+5e3d12c8-47bf-4a7c-a59d-d9b93b6f09da,0x7F,"Exploring the mountains this weekend! 🏞️","private","2024-11-20T09:00:00Z",32,"c4567890-abcd-1234-abcd-456789012345"
