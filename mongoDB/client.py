@@ -18,16 +18,17 @@ handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(
 log.addHandler(handler)
 
 # Read env vars related to API connection
-BOOKS_API_URL = os.getenv("BOOKS_API_URL", "http://localhost:8000")
+POSTS_API_URL = os.getenv("POSTS_API_URL", "http://localhost:8000")
 
 BASE_API_URL = os.getenv("BASE_API_URL", "http://localhost:8000")
 
-def make_request(collection, action, id=None, params=None, json_data=None):
+def make_request(collection, action, id=None, params='', json_data=None):
     url = f"{BASE_API_URL}/{collection}"
     if id:
         url += f"/{id}"
 
     if action == "GET":
+        print(url)
         return requests.get(url, params=params)
     elif action == "POST":
         return requests.post(url, json=json_data)
@@ -44,6 +45,7 @@ def print_entity(entity):
     print("=" * 50)
 
 def list_entities(collection, filter_params=None):
+
     response = make_request(collection, "GET", params=filter_params)
     if response.ok:
         for entity in response.json():
@@ -52,6 +54,8 @@ def list_entities(collection, filter_params=None):
         print(f"Error: {response.text}")
 
 def main():
+    log.info(f"Welcome to books catalog. App requests to: {POSTS_API_URL}")
+
     parser = argparse.ArgumentParser()
     parser.add_argument("collection", choices=["posts", "likes", "comments"], help="Target collection")
     parser.add_argument("action", choices=["list", "get", "create", "update", "delete"], help="Action to perform")
@@ -60,6 +64,7 @@ def main():
     args = parser.parse_args()
 
     params = {k: v for k, v in [p.split("=") for p in args.params]} if args.params else None
+    
 
     if args.action == "list":
         list_entities(args.collection, filter_params=params)
@@ -70,3 +75,7 @@ def main():
         else:
             print(f"Error: {response.text}")
     # Handle create, update, delete similarly
+
+
+if __name__ == "__main__":
+    main()

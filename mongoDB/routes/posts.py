@@ -6,23 +6,30 @@ from model import Post, PostUpdate
 
 router = APIRouter()
 
+
+#response = requests.post(BASE_URL + "/posts", json=post)
 @router.post("/", response_description="Post a new post", status_code=status.HTTP_201_CREATED)
 def create_post(request: Request, post: Post = Body(...)):
-    print("this probably doesnt execute\n")
     post = jsonable_encoder(post)
     new_post = request.app.database["posts"].insert_one(post)
     created_post = request.app.database["posts"].find_one({"_id": new_post.inserted_id})
+    
+    # Convert the MongoDB ObjectId to a string before returning
+    created_post["_id"] = str(created_post["_id"])
     return created_post
 
 
 # Get all posts with optional filters
+#response = make_request(collection, "GET", params=filter_params)
 @router.get("/", response_description="List all posts", response_model=List[Post])
-def list_posts(request: Request, visibility_status: str = None):
+def list_posts(request: Request, visibility_status: str = ''):
+    print("we started\n\n\n")
     query = {}
-    if visibility_status:
+    if visibility_status != '':
         query["visibility_status"] = visibility_status
     
     posts = list(request.app.database["posts"].find(query))
+    print("we finished\n\n\n")
     return posts
 
 # Get a single post by ID

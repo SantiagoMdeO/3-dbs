@@ -6,7 +6,6 @@ from datetime import datetime
 from pydantic import BaseModel, Field
 
 class Post(BaseModel):
-    post_id: str = Field(default_factory=uuid.uuid4, alias="_id")
     user_id: str = Field(..., description="ID of the user who created the post")
     content: str = Field(..., description="Content of the post")
     visibility_status: str = Field(..., description="Visibility status of the post (e.g., 'public', 'private', 'friends')")
