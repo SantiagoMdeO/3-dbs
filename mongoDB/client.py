@@ -25,7 +25,7 @@ BASE_API_URL = os.getenv("BASE_API_URL", "http://localhost:8000")
 def make_request(collection, action, id=None, params='', json_data=None):
     url = f"{BASE_API_URL}/{collection}"
     if id:
-        url += f"/{id}"
+        url += f"/id/{id}"
 
     if action == "GET":
         print(url)
@@ -60,6 +60,7 @@ def main():
     parser.add_argument("collection", choices=["posts", "likes", "comments"], help="Target collection")
     parser.add_argument("action", choices=["list", "get", "create", "update", "delete"], help="Action to perform")
     parser.add_argument("-i", "--id", help="Entity ID for actions that require it")
+    parser.add_argument("-s", "--search", help="query in string format") #aqui me quede con esto
     parser.add_argument("-p", "--params", nargs="+", help="Parameters for the request (key=value)", default=None)
     args = parser.parse_args()
 

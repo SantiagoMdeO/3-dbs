@@ -2,6 +2,14 @@ from fastapi import APIRouter, Body, Request, Response, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from typing import List
 
+#for object ids
+from bson import ObjectId  # Import ObjectId from bson
+
+#for queries as strings
+import json
+
+
+
 from model import Post, PostUpdate
 
 router = APIRouter()
@@ -32,14 +40,50 @@ def list_posts(request: Request, visibility_status: str = ''):
     print("we finished\n\n\n")
     return posts
 
-# Get a single post by ID
-@router.get("/{id}", response_description="Get a single post by ID", response_model=Post)
+
+
+
+
+
+
+
+
+
+@router.get("/id/{id}", response_description="Get a single post by ID", response_model=Post)
 def find_post(id: str, request: Request):
-    if (post := request.app.database["posts"].find_one({"_id": id})) is not None:
+    try:
+        # Convert the string ID to ObjectId
+        object_id = ObjectId(id)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid post ID format")
+
+    # Find the post by ObjectId
+    if (post := request.app.database["posts"].find_one({"_id": object_id})) is not None:
+        post["_id"] = str(post["_id"])  # Convert ObjectId back to string for the response
         return post
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with ID {id} not found")
 
+
+
+
+
+
+
+
+
+
+
+#func that recieves a string json, and then makes it back to a dictionary to pass a
+@router.get("/{queryString}", response_description="get many posts by your query(not by _id)", response_model=Post)
+def find_post(queryString: str, request: Request):
+    reconstructed_dict = json.loads(queryString)
+    if (post := request.app.database["posts"].find_many(reconstructed_dict)) is not None:
+        return post
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with this query {reconstructed_dict}\n not found")
+
+
+#we'll verify these later
 # Update a post
 @router.put("/{id}", response_description="Update a post", response_model=Post)
 def update_post(id: str, request: Request, post_update: PostUpdate = Body(...)):

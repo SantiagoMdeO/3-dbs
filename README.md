@@ -15,13 +15,27 @@ client -> routes
 pip install -r requirements.txt
 
 #run the api service
+cd .\mongoDB\
 python -m uvicorn main:app --reload
 
 #ensure you have a mongo db instance
 docker run --name mongodb -d -p 27017:27017 mongo
+#if you wanna see whats going on inside
+docker exec -it mongodb mongosh
+use iteso
+db.posts.find({})
 
 #script to populate
-missing
+cd .\data\mongoData\
+python .\populate.py
+
+#testing crud funcs xd
+cd ../../mongoDB/
+python client.py posts list #should return all posts registered
+python client.py posts get -i 0x1
+python client.py posts list -p user_id=0x1 visibility_status=public
+
+
 
 ```
 
