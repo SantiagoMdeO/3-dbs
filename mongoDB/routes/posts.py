@@ -17,6 +17,26 @@ from model import Post, PostUpdate
 router = APIRouter()
 
 
+def cleanNones(query):
+    #clean the nones
+    clean_query = {}
+    for x in query.keys():
+        if query[x] is not None:
+            clean_query[x] = query[x]
+    return clean_query
+
+def clear_ObjectIDMongo_Errors_In_List(returned_list_of_dict, query):
+    if returned_list_of_dict:
+        for post in returned_list_of_dict:
+            post["_id"] = str(post["_id"])
+        return returned_list_of_dict
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Posts with this query {query} not found",
+    )
+
+
+
 #response = requests.post(BASE_URL + "/posts", json=post)
 @router.post("/", response_description="Post a new post", status_code=status.HTTP_201_CREATED)
 def create_post(request: Request, post: Post = Body(...)):
@@ -43,14 +63,6 @@ def list_posts(request: Request, visibility_status: str = ''):
     return posts
 
 
-
-
-
-
-
-
-
-
 #this works
 @router.get("/id/{id}", response_description="Get a single post by ID", response_model=Post)
 def find_post(id: str, request: Request):
@@ -71,34 +83,18 @@ def find_post(id: str, request: Request):
 #func that recieves a string json, and then makes it back to a dictionary to pass a
 @router.get("/query/", response_description="get many posts by your query(not by _id)", response_model=Post)
 def find_post(request: Request, post: PostUpdate = Body(...)):
-    print("started to try to decode the query\n\n\n")
-
-
+    
     post = jsonable_encoder(post)
 
     #clean the nones
-    post_clean_query = {}
-    for x in post.keys():
-        if post[x] is not None:
-            post_clean_query[x] = post[x]
-
-    #this is causing errores, i got to eat man.
+    post_clean_query = cleanNones(post)
 
     returned_posts = list(request.app.database["posts"].find(post_clean_query))
-    if returned_posts:
-        print("we tried printing the values we")
-        # Convert ObjectId to string for each document
-        for post in returned_posts:
-            post["_id"] = str(post["_id"])
-        print(returned_posts)
 
-        return JSONResponse(content=returned_posts)
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Posts with this query {post_clean_query} not found",
-    )
+    #this also raises an eror if it is empty.
+    finalResponse = clear_ObjectIDMongo_Errors_In_List(returned_posts, post_clean_query)
 
-
+    return JSONResponse(content=returned_posts)
 
 
 
