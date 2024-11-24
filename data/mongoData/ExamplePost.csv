@@ -1,0 +1,9 @@
+user_id,content,visibility_status,created_at,likes,comments
+0x1,"Just had the best coffee ever!","public","2024-11-22T10:30:00Z",120,"c1234567-abcd-1234-abcd-1234567890ab;c9876543-abcd-1234-abcd-0987654321ba"
+0xB3,"Loving the new album from my favorite artist!","friends","2024-11-21T15:45:00Z",75,"c2345678-abcd-1234-abcd-234567890123;c3456789-abcd-1234-abcd-345678901234"
+0x7F,"Exploring the mountains this weekend!","private","2024-11-20T09:00:00Z",32,"c4567890-abcd-1234-abcd-456789012345"
+
+user_id,content,visibility_status,created_at,likes,comments
+0x4CA,Exploring the mountains this weekend!,friends,2024-04-03T19:04:05Z,450,c5747649-mongoID
+0xF58,Just had the best coffee ever!,private,2024-04-20T18:53:33Z,93,c8262684-mongoID;c1487060-mongoID
+0xDFC8,Just had the best coffee ever!,private,2024-03-05T14:25:12Z,294,c7621182-mongoID

@@ -8,6 +8,8 @@ from bson import ObjectId  # Import ObjectId from bson
 #for queries as strings
 import json
 
+from fastapi.responses import JSONResponse
+
 
 
 from model import Post, PostUpdate
@@ -49,6 +51,7 @@ def list_posts(request: Request, visibility_status: str = ''):
 
 
 
+#this works
 @router.get("/id/{id}", response_description="Get a single post by ID", response_model=Post)
 def find_post(id: str, request: Request):
     try:
@@ -65,22 +68,38 @@ def find_post(id: str, request: Request):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with ID {id} not found")
 
 
-
-
-
-
-
-
-
-
-
 #func that recieves a string json, and then makes it back to a dictionary to pass a
-@router.get("/{queryString}", response_description="get many posts by your query(not by _id)", response_model=Post)
-def find_post(queryString: str, request: Request):
-    reconstructed_dict = json.loads(queryString)
-    if (post := request.app.database["posts"].find_many(reconstructed_dict)) is not None:
-        return post
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with this query {reconstructed_dict}\n not found")
+@router.get("/query/", response_description="get many posts by your query(not by _id)", response_model=Post)
+def find_post(request: Request, post: PostUpdate = Body(...)):
+    print("started to try to decode the query\n\n\n")
+
+
+    post = jsonable_encoder(post)
+
+    #clean the nones
+    post_clean_query = {}
+    for x in post.keys():
+        if post[x] is not None:
+            post_clean_query[x] = post[x]
+
+    #this is causing errores, i got to eat man.
+
+    returned_posts = list(request.app.database["posts"].find(post_clean_query))
+    if returned_posts:
+        print("we tried printing the values we")
+        # Convert ObjectId to string for each document
+        for post in returned_posts:
+            post["_id"] = str(post["_id"])
+        print(returned_posts)
+
+        return JSONResponse(content=returned_posts)
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Posts with this query {post_clean_query} not found",
+    )
+
+
+
 
 
 #we'll verify these later

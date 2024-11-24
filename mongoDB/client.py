@@ -3,6 +3,10 @@ import argparse
 import logging
 import os
 import requests
+import json
+from pprint import pprint
+
+from model import PostUpdate
 
 #this we update each time =======================================
 #from model import Post, PostUpdate
@@ -22,14 +26,51 @@ POSTS_API_URL = os.getenv("POSTS_API_URL", "http://localhost:8000")
 
 BASE_API_URL = os.getenv("BASE_API_URL", "http://localhost:8000")
 
-def make_request(collection, action, id=None, params='', json_data=None):
+
+
+def processingJsonResponse(response):
+    if response and response.status_code == 200:
+        print("Request was successful! Validating and printing response...\n")
+        
+        # Parse the response JSON
+        try:
+            data = response.json()
+        except json.JSONDecodeError:
+            print("Error: Failed to parse response as JSON.")
+        else:
+            # Validate the structure of the data
+            if isinstance(data, list) and all("_id" in post for post in data):
+                print("Response data is valid!")
+                
+                # Pretty-print the data
+                print(json.dumps(data, indent=4))
+            else:
+                print("Error: Response structure is not as expected.")
+    else:
+        print(f"Request failed with status code: {response.status_code if response else 'No response received'}")
+
+
+
+
+def make_request(collection, action, id=None, query=None, params='', json_data=None):
     url = f"{BASE_API_URL}/{collection}"
     if id:
         url += f"/id/{id}"
+    if query:
+        url += "/query/"
+    if params != '':
+        params_dictionary = {}
+        for p in params:
+            temp = str.split(p, '+')
+            params_dictionary[temp[0]] = temp[1]
+        print(params_dictionary)
+        # book_update_instance = BookUpdate(**params_dictionary)
+        postDatatypeIncomplete = PostUpdate(**params_dictionary)
+        params = postDatatypeIncomplete.dict()
 
     if action == "GET":
         print(url)
-        return requests.get(url, params=params)
+        return requests.get(url, json=params)
     elif action == "POST":
         return requests.post(url, json=json_data)
     elif action == "PUT":
@@ -53,6 +94,13 @@ def list_entities(collection, filter_params=None):
     else:
         print(f"Error: {response.text}")
 
+
+
+
+
+
+
+
 def main():
     log.info(f"Welcome to books catalog. App requests to: {POSTS_API_URL}")
 
@@ -60,21 +108,26 @@ def main():
     parser.add_argument("collection", choices=["posts", "likes", "comments"], help="Target collection")
     parser.add_argument("action", choices=["list", "get", "create", "update", "delete"], help="Action to perform")
     parser.add_argument("-i", "--id", help="Entity ID for actions that require it")
-    parser.add_argument("-s", "--search", help="query in string format") #aqui me quede con esto
-    parser.add_argument("-p", "--params", nargs="+", help="Parameters for the request (key=value)", default=None)
+    parser.add_argument("-p", "--parameters",
+            nargs='+', #aqui si le pedi ayuda a chat, estaba la opcion de mandarlos como param1,param2, y luego spliteaba el string, pero esto se ve mas pro
+            help="add them like this: -p language_code+spn", default=None)
     args = parser.parse_args()
 
-    params = {k: v for k, v in [p.split("=") for p in args.params]} if args.params else None
+    #params = {k: v for k, v in [p.split("=") for p in args.params]} if args.params else None
     
 
     if args.action == "list":
-        list_entities(args.collection, filter_params=params)
-    elif args.action == "get" and args.id:
+        list_entities(args.collection, filter_params='')
+    elif args.action == "get" and args.id and not args.parameters:
         response = make_request(args.collection, "GET", id=args.id)
         if response.ok:
             print_entity(response.json())
         else:
             print(f"Error: {response.text}")
+    elif args.action == "get" and args.parameters:
+        response = make_request(args.collection, "GET", params=args.parameters, query=True)
+        processingJsonResponse(response)
+
     # Handle create, update, delete similarly
 
 

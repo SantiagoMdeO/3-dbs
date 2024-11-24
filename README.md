@@ -32,8 +32,11 @@ python .\populate.py
 #testing crud funcs xd
 cd ../../mongoDB/
 python client.py posts list #should return all posts registered
-python client.py posts get -i 0x1
-python client.py posts list -p user_id=0x1 visibility_status=public
+python client.py posts get -i 67424579ed51995a5f572113
+
+#how can we choose to do a query request
+python client.py posts get -p visibility_status+friends
+python client.py posts get -p visibility_status+friends user_id+0x55
 
 
 
