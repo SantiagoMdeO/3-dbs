@@ -40,6 +40,9 @@ python client.py posts get -p visibility_status+friends user_id+0x55
 
 #tryng put
 python client.py posts update -i 67425ba682034efeb71f673e -p likes+100
+
+python client.py posts delete -i 67425bba82034efeb71f6748 
+
 ```
 
 ## final command

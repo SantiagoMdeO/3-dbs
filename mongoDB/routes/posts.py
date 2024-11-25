@@ -135,13 +135,26 @@ def update_post(id: str, request: Request, post_update: PostUpdate = Body(...)):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with ID {id} not found")
 
 # Delete a post
-@router.delete("/{id}", response_description="Delete a post")
+@router.delete("/id/{id}", response_description="Delete a post")
 def delete_post(id: str, request: Request, response: Response):
-    delete_result = request.app.database["posts"].delete_one({"_id": id})
 
-    if delete_result.deleted_count == 1:
-        response.status_code = status.HTTP_204_NO_CONTENT
-        return
+    id_obj = from_id_string_to_id_object(id)
 
+    delete_result = request.app.database["posts"].delete_one({"_id": id_obj})
+
+    print()
+    print("print results")
+    print(delete_result)
+    print()
+
+    if delete_result.acknowledged:
+        if delete_result.deleted_count:
+            print("Document deleted.")
+            response.status_code = status.HTTP_200_OK
+            return response
+        else:
+            print("No document found to delete.")
+            response.status_code = status.HTTP_404_NOT_FOUND
+            return response
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with ID {id} not found")
 

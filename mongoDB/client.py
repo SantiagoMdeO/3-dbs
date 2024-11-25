@@ -36,7 +36,11 @@ def processingJsonResponse(response, containsIDTrouble):
         try:
             data = response.json()
         except json.JSONDecodeError:
-            print("Error: Failed to parse response as JSON.")
+            print("not JSON?.")
+            try:
+                print(response)
+            except:
+                print("coudnt directy, print it")
         else:
             if containsIDTrouble:
                 # Validate the structure of the data
@@ -51,6 +55,7 @@ def processingJsonResponse(response, containsIDTrouble):
                 # Pretty-print the data
                 print(json.dumps(data, indent=4))
     else:
+        print(response)
         print(f"Request failed with status code: {response.status_code if response else 'No response received'}")
 
 
@@ -136,6 +141,10 @@ def main():
     elif args.action == "update" and args.id and args.parameters:
         print("we called put\n\n:)\n")
         response = make_request(args.collection, "PUT", params=args.parameters, id=args.id)
+        processingJsonResponse(response, None)
+    elif args.action == "delete" and args.id:
+        print("we called put\n\n:)\n")
+        response = make_request(args.collection, "DELETE", id=args.id)
         processingJsonResponse(response, None)
 
     # Handle create, update, delete similarly
