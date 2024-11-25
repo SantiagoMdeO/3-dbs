@@ -35,6 +35,11 @@ def clear_ObjectIDMongo_Errors_In_List(returned_list_of_dict, query):
         detail=f"Posts with this query {query} not found",
     )
 
+def from_id_string_to_id_object(id):
+    try:
+        return ObjectId(id)
+    except:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid ID format")
 
 
 #response = requests.post(BASE_URL + "/posts", json=post)
@@ -100,13 +105,24 @@ def find_post(request: Request, post: PostUpdate = Body(...)):
 
 #we'll verify these later
 # Update a post
-@router.put("/{id}", response_description="Update a post", response_model=Post)
+@router.put("/id/{id}", response_description="Update a post", response_model=Post)
 def update_post(id: str, request: Request, post_update: PostUpdate = Body(...)):
-    post_data = {k: v for k, v in post_update.dict().items() if v is not None}
+    print()
+    print("router put starts")
+    print()
 
-    if len(post_data) >= 1:
+    post_update = jsonable_encoder(post_update)
+
+    #clean the nones
+    post_clean_query = cleanNones(post_update)
+
+    # Convert the string ID to an ObjectId
+    id = from_id_string_to_id_object(id)
+
+
+    if len(post_clean_query) >= 1:
         update_result = request.app.database["posts"].update_one(
-            {"_id": id}, {"$set": post_data}
+            {"_id": id}, {"$set": post_clean_query}
         )
 
         if update_result.modified_count == 1:

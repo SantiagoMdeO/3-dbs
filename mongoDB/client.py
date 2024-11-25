@@ -28,7 +28,7 @@ BASE_API_URL = os.getenv("BASE_API_URL", "http://localhost:8000")
 
 
 
-def processingJsonResponse(response):
+def processingJsonResponse(response, containsIDTrouble):
     if response and response.status_code == 200:
         print("Request was successful! Validating and printing response...\n")
         
@@ -38,14 +38,18 @@ def processingJsonResponse(response):
         except json.JSONDecodeError:
             print("Error: Failed to parse response as JSON.")
         else:
-            # Validate the structure of the data
-            if isinstance(data, list) and all("_id" in post for post in data):
-                print("Response data is valid!")
-                
+            if containsIDTrouble:
+                # Validate the structure of the data
+                if isinstance(data, list) and all("_id" in post for post in data):
+                    print("Response data is valid!")
+                    
+                    # Pretty-print the data
+                    print(json.dumps(data, indent=4))
+                else:
+                    print("Error: Response structure is not as expected.")
+            else:
                 # Pretty-print the data
                 print(json.dumps(data, indent=4))
-            else:
-                print("Error: Response structure is not as expected.")
     else:
         print(f"Request failed with status code: {response.status_code if response else 'No response received'}")
 
@@ -68,13 +72,15 @@ def make_request(collection, action, id=None, query=None, params='', json_data=N
         postDatatypeIncomplete = PostUpdate(**params_dictionary)
         params = postDatatypeIncomplete.dict()
 
+    print(url)
+    print(params)
+
     if action == "GET":
-        print(url)
         return requests.get(url, json=params)
     elif action == "POST":
-        return requests.post(url, json=json_data)
+        return requests.post(url, json=params)
     elif action == "PUT":
-        return requests.put(url, json=json_data)
+        return requests.put(url, json=params)
     elif action == "DELETE":
         return requests.delete(url)
     else:
@@ -126,7 +132,11 @@ def main():
             print(f"Error: {response.text}")
     elif args.action == "get" and args.parameters:
         response = make_request(args.collection, "GET", params=args.parameters, query=True)
-        processingJsonResponse(response)
+        processingJsonResponse(response, 1)
+    elif args.action == "update" and args.id and args.parameters:
+        print("we called put\n\n:)\n")
+        response = make_request(args.collection, "PUT", params=args.parameters, id=args.id)
+        processingJsonResponse(response, None)
 
     # Handle create, update, delete similarly
 

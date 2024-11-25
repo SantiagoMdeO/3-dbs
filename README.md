@@ -38,8 +38,8 @@ python client.py posts get -i 67424579ed51995a5f572113
 python client.py posts get -p visibility_status+friends
 python client.py posts get -p visibility_status+friends user_id+0x55
 
-
-
+#tryng put
+python client.py posts update -i 67425ba682034efeb71f673e -p likes+100
 ```
 
 ## final command
