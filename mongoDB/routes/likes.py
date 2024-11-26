@@ -10,8 +10,8 @@ router = APIRouter()
 
 
 #THIS IS REALLY IMPORTANT AAAAAA
-from model import Post, PostUpdate
-which_collection = "posts"
+from model import PostLike, PostLikesUpdate
+which_collection = "likes"
 
 #["posts", "likes", "comments", "highlights", "profile_visits", "mentions", "shares", 
 # "activity", "notifications"]
@@ -32,10 +32,9 @@ which_collection = "posts"
 #update
 #delete
 
-
 #response = requests.post(BASE_URL + "/posts", json=post)
 @router.post("/", response_description="Post a new post", status_code=status.HTTP_201_CREATED)
-def create_post(request: Request, post: Post = Body(...)):
+def create_post(request: Request, post: PostLike = Body(...)):
     post = jsonable_encoder(post)
     new_post = request.app.database[which_collection].insert_one(post)
 
@@ -44,15 +43,17 @@ def create_post(request: Request, post: Post = Body(...)):
 
 # Get all posts with optional filters
 #response = make_request(collection, "GET", params=filter_params)
-@router.get("/", response_description="List all posts", response_model=List[Post])
+@router.get("/", response_description="List all posts", response_model=List[PostLike])
 def list_posts(request: Request):
-    print("this should be wirtten")
+    print()
+    print("we entered list all likes")
+    print()
     query = {}
     posts = list(request.app.database[which_collection].find(query))
     return JSONResponse(clear_ObjectIDMongo_Errors_In_List(posts, query))
 
 #this works
-@router.get("/id/{id}", response_description="Get a single post by ID", response_model=Post)
+@router.get("/id/{id}", response_description="Get a single post by ID", response_model=PostLike)
 def find_post(id: str, request: Request):
     object_id = from_id_string_to_id_object(id)
     
@@ -65,8 +66,8 @@ def find_post(id: str, request: Request):
 
 
 #func that recieves a string json, and then makes it back to a dictionary to pass a
-@router.get("/query/", response_description="get many posts by your query(not by _id)", response_model=Post)
-def find_post(request: Request, post: PostUpdate = Body(...)):
+@router.get("/query/", response_description="get many posts by your query(not by _id)", response_model=PostLike)
+def find_post(request: Request, post: PostLikesUpdate = Body(...)):
     
     post = jsonable_encoder(post)
 
@@ -82,8 +83,8 @@ def find_post(request: Request, post: PostUpdate = Body(...)):
 
 #we'll verify these later
 # Update a post
-@router.put("/id/{id}", response_description="Update a post", response_model=Post)
-def update_post(id: str, request: Request, post_update: PostUpdate = Body(...)):
+@router.put("/id/{id}", response_description="Update a post", response_model=PostLike)
+def update_post(id: str, request: Request, post_update: PostLikesUpdate = Body(...)):
     post_update = jsonable_encoder(post_update)
 
     #clean the nones

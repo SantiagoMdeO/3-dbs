@@ -39,6 +39,7 @@ python client.py posts get -i 67425ba682034efeb71f673e
 #how can we choose to do a query request
 python client.py posts get -p visibility_status+friends
 python client.py posts get -p visibility_status+friends user_id+0x55
+python client.py posts get -p visibility_status+private
 
 #tryng put
 python client.py posts update -i 67425ba682034efeb71f673e -p likes+100

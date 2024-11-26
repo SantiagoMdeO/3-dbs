@@ -50,7 +50,6 @@ class PostUpdate(BaseModel):
             }
         }
 
-
 class PostLike(BaseModel):
     post_id: str = Field(..., description="ID of the post")
     user_id: str = Field(..., description="ID of the user who liked the post")
@@ -80,9 +79,6 @@ class PostLikesUpdate(BaseModel):
                 "pseudo_timestamp": "2024-11-22T15:00:00Z"
             }
         }
-
-
-
 
 class Comment(BaseModel):
     post_id: str = Field(..., description="ID of the post")
@@ -130,8 +126,6 @@ class PostCommentsUpdate(BaseModel):
             }
         }
 
-
-
 class HighlightInteraction(BaseModel):
     highlight_id: str = Field(..., description="ID of the highlight")
     user_id: str = Field(..., description="ID of the user interacting with the highlight")
@@ -160,7 +154,6 @@ class HighlightInteractionsUpdate(BaseModel):
             }
         }
 
-
 class ProfileVisit(BaseModel):
     user_id: str = Field(..., description="ID of the visited user")
     visitor_user_id: str = Field(..., description="ID of the visiting user")
@@ -175,7 +168,6 @@ class ProfileVisit(BaseModel):
             }
         }
 
-
 class ProfileVisitsUpdate(BaseModel):
     visit_timestamp: Optional[datetime] = None
 
@@ -185,8 +177,6 @@ class ProfileVisitsUpdate(BaseModel):
                 "visit_timestamp": "2024-11-23T14:30:00Z"
             }
         }
-
-
 
 class Mention(BaseModel):
     mentioned_user_id: str = Field(..., description="ID of the mentioned user")
@@ -215,9 +205,6 @@ class MentionsUpdate(BaseModel):
             }
         }
 
-
-
-
 class Share(BaseModel):
     post_id: Optional[str] = Field(None, description="ID of the shared post")
     highlight_id: Optional[str] = Field(None, description="ID of the shared highlight")
@@ -245,8 +232,6 @@ class SharesUpdate(BaseModel):
                 "share_timestamp": "2024-11-23T19:00:00Z"
             }
         }
-
-
 
 class Activity(BaseModel):
     user_id: str = Field(..., description="ID of the user")
@@ -277,7 +262,6 @@ class ActivitiesUpdate(BaseModel):
                 "timestamp": "2024-11-23T20:15:00Z"
             }
         }
-
 
 class Notification(BaseModel):
     user_id: str = Field(..., description="ID of the user receiving the notification")

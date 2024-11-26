@@ -10,17 +10,18 @@ router = APIRouter()
 
 
 #THIS IS REALLY IMPORTANT AAAAAA
-from model import Post, PostUpdate
+from model import Mention, MentionsUpdate
 which_collection = "posts"
 
-#["posts", "likes", "comments", "highlights", "profile_visits", "mentions", "shares", 
+#["posts", "likes", "comments", "highlights", "profile_visits",
+#  "mentions", "shares", 
 # "activity", "notifications"]
 
 #PostLike PostLikesUpdate
 #Comment PostCommentsUpdate
 #HighlightInteraction HighlightInteractionUpdate
 #ProfileVisit ProfileVisitUpdate
-#Mention MentionUpdate
+#Mention MentionsUpdate
 #Share ShareUpdate
 #Activity ActivityUpdate
 #Notification NotificationUpdate
@@ -35,7 +36,7 @@ which_collection = "posts"
 
 #response = requests.post(BASE_URL + "/posts", json=post)
 @router.post("/", response_description="Post a new post", status_code=status.HTTP_201_CREATED)
-def create_post(request: Request, post: Post = Body(...)):
+def create_post(request: Request, post: Mention = Body(...)):
     post = jsonable_encoder(post)
     new_post = request.app.database[which_collection].insert_one(post)
 
@@ -44,15 +45,14 @@ def create_post(request: Request, post: Post = Body(...)):
 
 # Get all posts with optional filters
 #response = make_request(collection, "GET", params=filter_params)
-@router.get("/", response_description="List all posts", response_model=List[Post])
+@router.get("/", response_description="List all posts", response_model=List[Mention])
 def list_posts(request: Request):
-    print("this should be wirtten")
     query = {}
     posts = list(request.app.database[which_collection].find(query))
     return JSONResponse(clear_ObjectIDMongo_Errors_In_List(posts, query))
 
 #this works
-@router.get("/id/{id}", response_description="Get a single post by ID", response_model=Post)
+@router.get("/id/{id}", response_description="Get a single post by ID", response_model=Mention)
 def find_post(id: str, request: Request):
     object_id = from_id_string_to_id_object(id)
     
@@ -65,8 +65,8 @@ def find_post(id: str, request: Request):
 
 
 #func that recieves a string json, and then makes it back to a dictionary to pass a
-@router.get("/query/", response_description="get many posts by your query(not by _id)", response_model=Post)
-def find_post(request: Request, post: PostUpdate = Body(...)):
+@router.get("/query/", response_description="get many posts by your query(not by _id)", response_model=Mention)
+def find_post(request: Request, post: MentionsUpdate = Body(...)):
     
     post = jsonable_encoder(post)
 
@@ -82,8 +82,8 @@ def find_post(request: Request, post: PostUpdate = Body(...)):
 
 #we'll verify these later
 # Update a post
-@router.put("/id/{id}", response_description="Update a post", response_model=Post)
-def update_post(id: str, request: Request, post_update: PostUpdate = Body(...)):
+@router.put("/id/{id}", response_description="Update a post", response_model=Mention)
+def update_post(id: str, request: Request, post_update: MentionsUpdate = Body(...)):
     post_update = jsonable_encoder(post_update)
 
     #clean the nones
