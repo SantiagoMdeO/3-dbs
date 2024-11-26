@@ -37,7 +37,7 @@ which_collection = "likes"
 def create_post(request: Request, post: PostLike = Body(...)):
     post = jsonable_encoder(post)
     new_post = request.app.database[which_collection].insert_one(post)
-
+    
     return find_object_by_id(which_collection, new_post.inserted_id, request)
 
 

@@ -87,10 +87,6 @@ class Comment(BaseModel):
     timestamp: datetime = Field(default_factory=datetime.utcnow, description="Time of comment creation")
     sentiment_score: Optional[float] = Field(None, description="Sentiment score of the comment")
     sentiment_category: Optional[str] = Field(None, description="Category of sentiment (e.g., 'positive', 'neutral', 'negative')")
-    replies: List[dict] = Field(
-        default_factory=list, 
-        description="Replies to the comment, with details"
-    )
 
     class Config:
         schema_extra = {
@@ -100,15 +96,7 @@ class Comment(BaseModel):
                 "comment_text": "This is an amazing post!",
                 "timestamp": "2024-11-22T10:30:00Z",
                 "sentiment_score": 0.9,
-                "sentiment_category": "positive",
-                "replies": [
-                    {
-                        "reply_id": "r1234567",
-                        "replier_user_id": "98765432-abcd-1234-abcd-1234567890ba",
-                        "reply_text": "Absolutely agree!",
-                        "timestamp": "2024-11-22T11:00:00Z"
-                    }
-                ]
+                "sentiment_category": "positive"
             }
         }
 

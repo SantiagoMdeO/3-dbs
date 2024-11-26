@@ -51,4 +51,7 @@ def find_object_by_id(object, id, request):
     # Convert the MongoDB ObjectId to a string before returning
     foundObject["_id"] = str(foundObject["_id"])
 
+    return foundObject
+
+
 
