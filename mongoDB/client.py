@@ -116,7 +116,7 @@ def main():
     log.info(f"Welcome to books catalog. App requests to: {POSTS_API_URL}")
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("collection", choices=["posts", "likes", "comments"], help="Target collection")
+    parser.add_argument("collection", choices=["posts", "likes", "comments", "highlights", "profile_visits", "mentions", "shares", "activity", "notifications"], help="Target collection")
     parser.add_argument("action", choices=["list", "get", "create", "update", "delete"], help="Action to perform")
     parser.add_argument("-i", "--id", help="Entity ID for actions that require it")
     parser.add_argument("-p", "--parameters",

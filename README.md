@@ -68,3 +68,4 @@ python main.py
 
 things i have yet to do:
 - when egtting all elements, for some reason, it doesnt return all the elements ids, i dont know why?
+- we are not gonna be able to update comments, i left the m there for the posibility of agregation pipelines
