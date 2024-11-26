@@ -14,32 +14,9 @@ from fastapi.responses import JSONResponse
 
 from model import Post, PostUpdate
 
+from routes.routes_funcs import cleanNones, clear_ObjectIDMongo_Errors_In_List, from_id_string_to_id_object, from_id_string_to_id_object, process_result_from_delete, find_object_by_id
+
 router = APIRouter()
-
-
-def cleanNones(query):
-    #clean the nones
-    clean_query = {}
-    for x in query.keys():
-        if query[x] is not None:
-            clean_query[x] = query[x]
-    return clean_query
-
-def clear_ObjectIDMongo_Errors_In_List(returned_list_of_dict, query):
-    if returned_list_of_dict:
-        for post in returned_list_of_dict:
-            post["_id"] = str(post["_id"])
-        return returned_list_of_dict
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Posts with this query {query} not found",
-    )
-
-def from_id_string_to_id_object(id):
-    try:
-        return ObjectId(id)
-    except:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid ID format")
 
 
 #response = requests.post(BASE_URL + "/posts", json=post)
@@ -47,36 +24,27 @@ def from_id_string_to_id_object(id):
 def create_post(request: Request, post: Post = Body(...)):
     post = jsonable_encoder(post)
     new_post = request.app.database["posts"].insert_one(post)
-    created_post = request.app.database["posts"].find_one({"_id": new_post.inserted_id})
-    
-    # Convert the MongoDB ObjectId to a string before returning
-    created_post["_id"] = str(created_post["_id"])
-    return created_post
+
+    return find_object_by_id("posts", new_post.inserted_id, request)
 
 
 # Get all posts with optional filters
 #response = make_request(collection, "GET", params=filter_params)
 @router.get("/", response_description="List all posts", response_model=List[Post])
 def list_posts(request: Request, visibility_status: str = ''):
-    print("we started\n\n\n")
     query = {}
     if visibility_status != '':
         query["visibility_status"] = visibility_status
     
     posts = list(request.app.database["posts"].find(query))
-    print("we finished\n\n\n")
-    return posts
+    return clear_ObjectIDMongo_Errors_In_List(posts, query)
 
 
 #this works
 @router.get("/id/{id}", response_description="Get a single post by ID", response_model=Post)
 def find_post(id: str, request: Request):
-    try:
-        # Convert the string ID to ObjectId
-        object_id = ObjectId(id)
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid post ID format")
-
+    object_id = from_id_string_to_id_object(id)
+    
     # Find the post by ObjectId
     if (post := request.app.database["posts"].find_one({"_id": object_id})) is not None:
         post["_id"] = str(post["_id"])  # Convert ObjectId back to string for the response
@@ -101,16 +69,10 @@ def find_post(request: Request, post: PostUpdate = Body(...)):
 
     return JSONResponse(content=returned_posts)
 
-
-
 #we'll verify these later
 # Update a post
 @router.put("/id/{id}", response_description="Update a post", response_model=Post)
 def update_post(id: str, request: Request, post_update: PostUpdate = Body(...)):
-    print()
-    print("router put starts")
-    print()
-
     post_update = jsonable_encoder(post_update)
 
     #clean the nones
@@ -121,10 +83,9 @@ def update_post(id: str, request: Request, post_update: PostUpdate = Body(...)):
 
 
     if len(post_clean_query) >= 1:
-        update_result = request.app.database["posts"].update_one(
-            {"_id": id}, {"$set": post_clean_query}
-        )
+        update_result = request.app.database["posts"].update_one({"_id": id}, {"$set": post_clean_query})
 
+        #confirm it exists
         if update_result.modified_count == 1:
             if (updated_post := request.app.database["posts"].find_one({"_id": id})) is not None:
                 return updated_post
@@ -142,19 +103,5 @@ def delete_post(id: str, request: Request, response: Response):
 
     delete_result = request.app.database["posts"].delete_one({"_id": id_obj})
 
-    print()
-    print("print results")
-    print(delete_result)
-    print()
-
-    if delete_result.acknowledged:
-        if delete_result.deleted_count:
-            print("Document deleted.")
-            response.status_code = status.HTTP_200_OK
-            return response
-        else:
-            print("No document found to delete.")
-            response.status_code = status.HTTP_404_NOT_FOUND
-            return response
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with ID {id} not found")
+    return process_result_from_delete(delete_result, response)
 
