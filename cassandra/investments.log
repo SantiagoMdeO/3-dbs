@@ -1,0 +1,197 @@
+2024-11-26 04:21:36,322 [INFO] root: Connecting to Cluster 
+
+2024-11-26 04:21:36,334 [WARNING] cassandra.cluster: Cluster.__init__ called with contact_points specified, but no load_balancing_policy. In the next major version, this will raise an error; please specify a load-balancing policy. (contact_points = ['localhost'], lbp = None)
+2024-11-26 04:21:38,391 [WARNING] cassandra.cluster: [control connection] Error connecting to ::1:9042:
+Traceback (most recent call last):
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3577, in _reconnect_internal
+    return self._try_connect(host)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3599, in _try_connect
+    connection = self._cluster.connection_factory(host.endpoint, is_control_connection=True)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 1670, in connection_factory
+    return self.connection_class.factory(endpoint, self.connect_timeout, *args, **kwargs)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\connection.py", line 846, in factory
+    conn = cls(endpoint, *args, **kwargs)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\io\asyncorereactor.py", line 353, in __init__
+    self._connect_socket()
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\connection.py", line 951, in _connect_socket
+    raise socket.error(sockerr.errno, "Tried connecting to %s. Last error: %s" %
+ConnectionRefusedError: [Errno 10061] Tried connecting to [('::1', 9042, 0, 0)]. Last error: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+2024-11-26 04:21:40,449 [WARNING] cassandra.cluster: [control connection] Error connecting to 127.0.0.1:9042:
+Traceback (most recent call last):
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3577, in _reconnect_internal
+    return self._try_connect(host)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3599, in _try_connect
+    connection = self._cluster.connection_factory(host.endpoint, is_control_connection=True)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 1670, in connection_factory
+    return self.connection_class.factory(endpoint, self.connect_timeout, *args, **kwargs)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\connection.py", line 846, in factory
+    conn = cls(endpoint, *args, **kwargs)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\io\asyncorereactor.py", line 353, in __init__
+    self._connect_socket()
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\connection.py", line 951, in _connect_socket
+    raise socket.error(sockerr.errno, "Tried connecting to %s. Last error: %s" %
+ConnectionRefusedError: [Errno 10061] Tried connecting to [('127.0.0.1', 9042)]. Last error: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+2024-11-26 04:21:40,451 [ERROR] cassandra.cluster: Control connection failed to connect, shutting down Cluster:
+Traceback (most recent call last):
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 1740, in connect
+    self.control_connection.connect()
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3543, in connect
+    self._set_new_connection(self._reconnect_internal())
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3588, in _reconnect_internal
+    raise NoHostAvailable("Unable to connect to any servers", errors)
+cassandra.cluster.NoHostAvailable: ('Unable to connect to any servers', {'::1:9042': ConnectionRefusedError(10061, "Tried connecting to [('::1', 9042, 0, 0)]. Last error: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión"), '127.0.0.1:9042': ConnectionRefusedError(10061, "Tried connecting to [('127.0.0.1', 9042)]. Last error: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión")})
+2024-11-26 04:26:42,867 [INFO] root: Connecting to Cluster 
+
+2024-11-26 04:26:42,873 [WARNING] cassandra.cluster: Cluster.__init__ called with contact_points specified, but no load_balancing_policy. In the next major version, this will raise an error; please specify a load-balancing policy. (contact_points = ['localhost'], lbp = None)
+2024-11-26 04:26:42,920 [WARNING] cassandra.cluster: [control connection] Error connecting to ::1:9042:
+Traceback (most recent call last):
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3577, in _reconnect_internal
+    return self._try_connect(host)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3599, in _try_connect
+    connection = self._cluster.connection_factory(host.endpoint, is_control_connection=True)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 1670, in connection_factory
+    return self.connection_class.factory(endpoint, self.connect_timeout, *args, **kwargs)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\connection.py", line 852, in factory
+    raise conn.last_error
+cassandra.connection.ConnectionShutdown: Connection to ::1:9042 was closed
+2024-11-26 04:26:42,922 [WARNING] cassandra.cluster: Host ::1:9042 has been marked down
+2024-11-26 04:26:44,441 [WARNING] cassandra.cluster: [control connection] Error connecting to 127.0.0.1:9042:
+Traceback (most recent call last):
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3577, in _reconnect_internal
+    return self._try_connect(host)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3599, in _try_connect
+    connection = self._cluster.connection_factory(host.endpoint, is_control_connection=True)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 1670, in connection_factory
+    return self.connection_class.factory(endpoint, self.connect_timeout, *args, **kwargs)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\connection.py", line 852, in factory
+    raise conn.last_error
+cassandra.connection.ConnectionShutdown: Connection to 127.0.0.1:9042 was closed
+2024-11-26 04:26:44,442 [WARNING] cassandra.cluster: Host 127.0.0.1:9042 has been marked down
+2024-11-26 04:26:44,443 [ERROR] cassandra.cluster: Control connection failed to connect, shutting down Cluster:
+Traceback (most recent call last):
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 1740, in connect
+    self.control_connection.connect()
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3543, in connect
+    self._set_new_connection(self._reconnect_internal())
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3588, in _reconnect_internal
+    raise NoHostAvailable("Unable to connect to any servers", errors)
+cassandra.cluster.NoHostAvailable: ('Unable to connect to any servers', {'::1:9042': ConnectionShutdown('Connection to ::1:9042 was closed'), '127.0.0.1:9042': ConnectionShutdown('Connection to 127.0.0.1:9042 was closed')})
+2024-11-26 04:26:44,455 [WARNING] cassandra.pool: Error attempting to reconnect to ::1:9042, scheduling retry in 2.02 seconds: Connection to ::1:9042 was closed
+2024-11-26 04:26:51,110 [INFO] root: Connecting to Cluster 
+
+2024-11-26 04:26:51,114 [WARNING] cassandra.cluster: Cluster.__init__ called with contact_points specified, but no load_balancing_policy. In the next major version, this will raise an error; please specify a load-balancing policy. (contact_points = ['localhost'], lbp = None)
+2024-11-26 04:26:51,133 [WARNING] cassandra.cluster: [control connection] Error connecting to 127.0.0.1:9042:
+Traceback (most recent call last):
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3577, in _reconnect_internal
+    return self._try_connect(host)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3599, in _try_connect
+    connection = self._cluster.connection_factory(host.endpoint, is_control_connection=True)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 1670, in connection_factory
+    return self.connection_class.factory(endpoint, self.connect_timeout, *args, **kwargs)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\connection.py", line 852, in factory
+    raise conn.last_error
+cassandra.connection.ConnectionShutdown: Connection to 127.0.0.1:9042 was closed
+2024-11-26 04:26:51,135 [WARNING] cassandra.cluster: Host 127.0.0.1:9042 has been marked down
+2024-11-26 04:26:52,674 [WARNING] cassandra.cluster: [control connection] Error connecting to ::1:9042:
+Traceback (most recent call last):
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3577, in _reconnect_internal
+    return self._try_connect(host)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3599, in _try_connect
+    connection = self._cluster.connection_factory(host.endpoint, is_control_connection=True)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 1670, in connection_factory
+    return self.connection_class.factory(endpoint, self.connect_timeout, *args, **kwargs)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\connection.py", line 852, in factory
+    raise conn.last_error
+cassandra.connection.ConnectionShutdown: Connection to ::1:9042 was closed
+2024-11-26 04:26:52,675 [WARNING] cassandra.pool: Error attempting to reconnect to 127.0.0.1:9042, scheduling retry in 2.22 seconds: Connection to 127.0.0.1:9042 was closed
+2024-11-26 04:26:52,676 [WARNING] cassandra.cluster: Host ::1:9042 has been marked down
+2024-11-26 04:26:52,676 [ERROR] cassandra.cluster: Control connection failed to connect, shutting down Cluster:
+Traceback (most recent call last):
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 1740, in connect
+    self.control_connection.connect()
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3543, in connect
+    self._set_new_connection(self._reconnect_internal())
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3588, in _reconnect_internal
+    raise NoHostAvailable("Unable to connect to any servers", errors)
+cassandra.cluster.NoHostAvailable: ('Unable to connect to any servers', {'127.0.0.1:9042': ConnectionShutdown('Connection to 127.0.0.1:9042 was closed'), '::1:9042': ConnectionShutdown('Connection to ::1:9042 was closed')})
+2024-11-26 04:27:06,197 [INFO] root: Connecting to Cluster 
+
+2024-11-26 04:27:06,201 [WARNING] cassandra.cluster: Cluster.__init__ called with contact_points specified, but no load_balancing_policy. In the next major version, this will raise an error; please specify a load-balancing policy. (contact_points = ['localhost'], lbp = None)
+2024-11-26 04:27:06,214 [WARNING] cassandra.cluster: [control connection] Error connecting to ::1:9042:
+Traceback (most recent call last):
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3577, in _reconnect_internal
+    return self._try_connect(host)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3599, in _try_connect
+    connection = self._cluster.connection_factory(host.endpoint, is_control_connection=True)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 1670, in connection_factory
+    return self.connection_class.factory(endpoint, self.connect_timeout, *args, **kwargs)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\connection.py", line 852, in factory
+    raise conn.last_error
+cassandra.connection.ConnectionShutdown: Connection to ::1:9042 was closed
+2024-11-26 04:27:06,216 [WARNING] cassandra.cluster: Host ::1:9042 has been marked down
+2024-11-26 04:27:07,762 [WARNING] cassandra.pool: Error attempting to reconnect to ::1:9042, scheduling retry in 2.2 seconds: Connection to ::1:9042 was closed
+2024-11-26 04:27:07,763 [WARNING] cassandra.cluster: [control connection] Error connecting to 127.0.0.1:9042:
+Traceback (most recent call last):
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3577, in _reconnect_internal
+    return self._try_connect(host)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3599, in _try_connect
+    connection = self._cluster.connection_factory(host.endpoint, is_control_connection=True)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 1670, in connection_factory
+    return self.connection_class.factory(endpoint, self.connect_timeout, *args, **kwargs)
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\connection.py", line 852, in factory
+    raise conn.last_error
+cassandra.connection.ConnectionShutdown: Connection to 127.0.0.1:9042 was closed
+2024-11-26 04:27:07,763 [ERROR] cassandra.cluster: Control connection failed to connect, shutting down Cluster:
+Traceback (most recent call last):
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 1740, in connect
+    self.control_connection.connect()
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3543, in connect
+    self._set_new_connection(self._reconnect_internal())
+  File "C:\Users\Santi\AppData\Local\Programs\Python\Python310\lib\site-packages\cassandra\cluster.py", line 3588, in _reconnect_internal
+    raise NoHostAvailable("Unable to connect to any servers", errors)
+cassandra.cluster.NoHostAvailable: ('Unable to connect to any servers', {'::1:9042': ConnectionShutdown('Connection to ::1:9042 was closed'), '127.0.0.1:9042': ConnectionShutdown('Connection to 127.0.0.1:9042 was closed')})
+2024-11-26 04:31:19,192 [INFO] root: Connecting to Cluster 
+
+2024-11-26 04:31:19,197 [WARNING] cassandra.cluster: Cluster.__init__ called with contact_points specified, but no load_balancing_policy. In the next major version, this will raise an error; please specify a load-balancing policy. (contact_points = ['localhost'], lbp = None)
+2024-11-26 04:31:19,231 [WARNING] cassandra.cluster: Downgrading core protocol version from 66 to 65 for 127.0.0.1:9042. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2024-11-26 04:31:20,764 [WARNING] cassandra.cluster: Downgrading core protocol version from 65 to 5 for 127.0.0.1:9042. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2024-11-26 04:31:22,342 [INFO] cassandra.policies: Using datacenter 'datacenter1' for DCAwareRoundRobinPolicy (via host '127.0.0.1:9042'); if incorrect, please specify a local_dc to the constructor, or limit contact points to local cluster nodes
+2024-11-26 04:31:22,342 [INFO] cassandra.cluster: Cassandra host ::1:9042 removed
+2024-11-26 04:31:23,637 [INFO] root: Creating keyspace: cassandrafinal with replication factor 1
+2024-11-26 04:31:23,853 [INFO] root: Creating model schema
+2024-11-26 04:32:19,554 [INFO] root: Connecting to Cluster 
+
+2024-11-26 04:32:19,557 [WARNING] cassandra.cluster: Cluster.__init__ called with contact_points specified, but no load_balancing_policy. In the next major version, this will raise an error; please specify a load-balancing policy. (contact_points = ['localhost'], lbp = None)
+2024-11-26 04:32:19,587 [WARNING] cassandra.cluster: Downgrading core protocol version from 66 to 65 for 127.0.0.1:9042. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2024-11-26 04:32:21,114 [WARNING] cassandra.cluster: Downgrading core protocol version from 65 to 5 for 127.0.0.1:9042. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2024-11-26 04:32:22,677 [INFO] cassandra.policies: Using datacenter 'datacenter1' for DCAwareRoundRobinPolicy (via host '127.0.0.1:9042'); if incorrect, please specify a local_dc to the constructor, or limit contact points to local cluster nodes
+2024-11-26 04:32:22,678 [INFO] cassandra.cluster: Cassandra host ::1:9042 removed
+2024-11-26 04:32:23,977 [INFO] root: Creating keyspace: cassandrafinal with replication factor 1
+2024-11-26 04:32:24,005 [INFO] root: Creating model schema
+2024-11-26 04:32:53,358 [INFO] root: Connecting to Cluster 
+
+2024-11-26 04:32:53,362 [WARNING] cassandra.cluster: Cluster.__init__ called with contact_points specified, but no load_balancing_policy. In the next major version, this will raise an error; please specify a load-balancing policy. (contact_points = ['localhost'], lbp = None)
+2024-11-26 04:32:53,405 [WARNING] cassandra.cluster: Downgrading core protocol version from 66 to 65 for 127.0.0.1:9042. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2024-11-26 04:32:54,935 [WARNING] cassandra.cluster: Downgrading core protocol version from 65 to 5 for 127.0.0.1:9042. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2024-11-26 04:32:56,508 [INFO] cassandra.policies: Using datacenter 'datacenter1' for DCAwareRoundRobinPolicy (via host '127.0.0.1:9042'); if incorrect, please specify a local_dc to the constructor, or limit contact points to local cluster nodes
+2024-11-26 04:32:56,508 [INFO] cassandra.cluster: Cassandra host ::1:9042 removed
+2024-11-26 04:32:57,777 [INFO] root: Creating keyspace: cassandrafinal with replication factor 1
+2024-11-26 04:32:57,802 [INFO] root: Creating model schema
+2024-11-26 04:33:16,007 [INFO] root: Connecting to Cluster 
+
+2024-11-26 04:33:16,012 [WARNING] cassandra.cluster: Cluster.__init__ called with contact_points specified, but no load_balancing_policy. In the next major version, this will raise an error; please specify a load-balancing policy. (contact_points = ['localhost'], lbp = None)
+2024-11-26 04:33:16,046 [WARNING] cassandra.cluster: Downgrading core protocol version from 66 to 65 for ::1:9042. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2024-11-26 04:33:17,565 [WARNING] cassandra.cluster: Downgrading core protocol version from 65 to 5 for ::1:9042. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2024-11-26 04:33:19,142 [INFO] cassandra.policies: Using datacenter 'datacenter1' for DCAwareRoundRobinPolicy (via host '::1:9042'); if incorrect, please specify a local_dc to the constructor, or limit contact points to local cluster nodes
+2024-11-26 04:33:19,142 [INFO] cassandra.cluster: Cassandra host 127.0.0.1:9042 removed
+2024-11-26 04:33:20,390 [INFO] root: Creating keyspace: cassandrafinal with replication factor 1
+2024-11-26 04:33:20,423 [INFO] root: Creating model schema
+2024-11-26 04:36:32,411 [INFO] root: Connecting to Cluster 
+
+2024-11-26 04:36:32,415 [WARNING] cassandra.cluster: Cluster.__init__ called with contact_points specified, but no load_balancing_policy. In the next major version, this will raise an error; please specify a load-balancing policy. (contact_points = ['localhost'], lbp = None)
+2024-11-26 04:36:32,460 [WARNING] cassandra.cluster: Downgrading core protocol version from 66 to 65 for ::1:9042. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2024-11-26 04:36:33,984 [WARNING] cassandra.cluster: Downgrading core protocol version from 65 to 5 for ::1:9042. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2024-11-26 04:36:35,550 [INFO] cassandra.policies: Using datacenter 'datacenter1' for DCAwareRoundRobinPolicy (via host '::1:9042'); if incorrect, please specify a local_dc to the constructor, or limit contact points to local cluster nodes
+2024-11-26 04:36:35,551 [INFO] cassandra.cluster: Cassandra host 127.0.0.1:9042 removed
+2024-11-26 04:36:36,734 [INFO] root: Creating keyspace: cassandrafinal with replication factor 1
+2024-11-26 04:36:36,761 [INFO] root: Creating model schema
