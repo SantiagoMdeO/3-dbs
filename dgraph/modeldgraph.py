@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 import pydgraph
 import json
+import pandas as pd
+import random
+from datetime import datetime, timedelta
+
+
 
 # 1. Schema
 def set_schema(client):
@@ -45,7 +50,7 @@ def set_schema(client):
     }
 
     # Predicates
-    username: string @index(trigram) .
+    username: string @index(trigram, hash) .
     follower_count: int .
     followed_user_uid: uid .
     Follows_before: [uid] .
@@ -62,57 +67,72 @@ def set_schema(client):
     print("Setting schema in the database...\n")
     return client.alter(pydgraph.Operation(schema=schema))
 
+
+def process_users_to_dgraph_format(csv_path):
+    names = [
+        "Julian", "Tess", "Caroline", "Camila", "Sabrina", "Madaline", "Darcy", "Antony",
+        "Kate", "Caroline", "Adrian", "Justin", "Dominik", "Mary", "Lilianna", "Tiana",
+        "Lily", "Henry", "Kristian", "Audrey", "Rosie", "Madaline", "Honey", "Sam", "Honey"
+    ]
+    # Read the CSV file
+    df = pd.read_csv(csv_path)
+    
+    # Prepare the final data format
+    data = []
+    user_list = [
+        {"uid": f"_:user{i+1}", "username": row["username"]}
+        for i, row in df.iterrows()
+    ]
+    
+    for index, row in df.iterrows():
+        user_uid = f"_:user{index+1}"
+        username = row["username"]
+        follower_count = row["num_followers"]
+        num_following = row["num_following"]
+        blocked_user = random.choice([u for u in names if u != username])  
+
+
+        # Randomly sample users for "Follows_before" and "Follows_after"
+        following_users = random.sample(
+            [u for u in user_list if u["uid"] != user_uid], num_following
+        )
+        half = num_following // 2
+        follows_before = following_users[:half]
+        follows_after = following_users[half:]
+
+        # Add timestamps to "Follows_after"
+        follows_after_with_time = [
+            {
+                "uid": u["uid"],
+                "username": u["username"],
+                "when": (datetime.now() - timedelta(days=random.randint(1, 30))).isoformat() + "Z",
+            }
+            for u in follows_after
+        ]
+
+        # Append user data to the final structure
+        data.append(
+            {
+                "uid": user_uid,
+                "dgraph.type": "user",
+                "username": username,
+                "follower_count": follower_count,
+                "Follows_before": follows_before,
+                "Follows_after": follows_after_with_time,
+                'Blocked_user': {'uid': f'_:user{names.index(blocked_user)+1}', 'username': blocked_user}
+
+            }
+        )
+    
+    return data
+
+
 # 2. Insert Data
 def create_data(client):
     # Crear una nueva transacción
     txn = client.txn()
     try:
-        data = [
-            {
-                'uid': '_:user1',
-                'dgraph.type': 'user',
-                'username': 'Nata',
-                'follower_count': 1200,
-                'Follows_before': [
-                    {'uid': '_:user2', 'username': 'Ale'}
-                ],
-                'Follows_after': [
-                    {'uid': '_:user3', 'username': 'Tato', 'when': '2024-11-24T10:00:00Z'}
-                ]
-            },
-            {
-                'uid': '_:user2',
-                'dgraph.type': 'user',
-                'username': 'Ale',
-                'follower_count': 950,
-                'Blocked_after': [
-                    {'uid': '_:user3', 'when': '2024-11-23T15:30:00Z'}
-                ]
-            },
-            {
-                'uid': '_:user3',
-                'dgraph.type': 'user',
-                'username': 'Tato',
-                'follower_count': 500
-            },
-            {
-                'uid': '_:post1',
-                'dgraph.type': 'post',
-                'description': 'Excited to share my first post!',
-                'reach_count': 100,
-                'reach_type': 'organic',
-                'interaction': [
-                    {'uid': '_:interaction1', 'type': 'like', 'user': {'uid': '_:user2'}, 'when': '2024-11-24T11:00:00Z'}
-                ]
-            },
-            {
-                'uid': '_:interaction1',
-                'dgraph.type': 'interaction',
-                'type': 'like',
-                'user': {'uid': '_:user2'},
-                'when': '2024-11-24T11:00:00Z'
-            }
-        ]
+        data = process_users_to_dgraph_format("../data/dataUnderstanding/social_media_users.csv") #this migth not work
 
         response = txn.mutate(set_obj=data)
 
@@ -124,6 +144,21 @@ def create_data(client):
     finally:
         # Limpiar
         txn.discard()
+
+def search_user_by_prefix(client, prefix: str):
+    query = f"""
+    {{
+      users(func: has(username)) @filter(regex(username, "^{prefix}.*")) {{
+        uid
+        username
+      }}
+    }}
+    """
+    
+    response = client.txn(read_only=True).query(query)
+    result = json.loads(response.json)
+    print(json.dumps(result, indent=2))
+
 
 # 3. Follow Tracking Before Registration
 def query_follow_tracking_before(client):

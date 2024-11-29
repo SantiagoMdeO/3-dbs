@@ -221,36 +221,6 @@ class SharesUpdate(BaseModel):
             }
         }
 
-class Activity(BaseModel):
-    user_id: str = Field(..., description="ID of the user")
-    activity_type: str = Field(..., description="Type of activity performed")
-    source_device: str = Field(..., description="Device used to perform the activity")
-    timestamp: datetime = Field(default_factory=datetime.utcnow, description="Timestamp of the activity")
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "user_id": "12345678-abcd-1234-abcd-1234567890ab",
-                "activity_type": "Login",
-                "source_device": "Mobile",
-                "timestamp": "2024-11-22T10:30:00Z"
-            }
-        }
-
-class ActivitiesUpdate(BaseModel):
-    activity_type: Optional[str] = None
-    source_device: Optional[str] = None
-    timestamp: Optional[datetime] = None
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "activity_type": "login",
-                "source_device": "mobile",
-                "timestamp": "2024-11-23T20:15:00Z"
-            }
-        }
-
 class Notification(BaseModel):
     user_id: str = Field(..., description="ID of the user receiving the notification")
     notification_type: str = Field(..., description="Type of notification (e.g., 'like', 'comment')")

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 import pydgraph
-import model
+import modeldgraph
 
 # Set the Dgraph URI from environment variable, or use default
 DGRAPH_URI = os.getenv('DGRAPH_URI', 'localhost:9080')
@@ -38,7 +38,7 @@ def main():
     # Create schema ////////////////////////////////////
     try:
         print("\n\n")
-        model.set_schema(client)
+        modeldgraph.set_schema(client)
         print("Successfully applied schema\n\n")
     except ValueError:
         print("Invalid schema. Please enter a number.\n")
@@ -55,30 +55,30 @@ def main():
             continue
 
         if option == 2:
-            model.create_data(client)
+            modeldgraph.create_data(client)
             print("Data inserted successfully.\n")
 
         elif option == 3:
-            model.query_follow_tracking_before(client)
+            modeldgraph.query_follow_tracking_before(client)
 
         elif option == 4:
-            model.query_new_follower_tracking(client)
+            modeldgraph.query_new_follower_tracking(client)
         
         elif option == 5:
-            model.query_unfollow_tracking(client)
+            modeldgraph.query_unfollow_tracking(client)
 
         elif option == 6:
             # model.query_follower_growth_analytics(client)
             print("No ah\n")
 
         elif option == 7:
-            model.query_content_reach_analysis(client)
+            modeldgraph.query_content_reach_analysis(client)
 
         elif option == 8:
-            model.query_profile_interaction_mapping(client)
+            modeldgraph.query_profile_interaction_mapping(client)
 
         elif option == 9:
-            model.query_user_block_tracking(client)
+            modeldgraph.query_user_block_tracking(client)
 
         elif option == 10:
             close_client_stub(client_stub)
