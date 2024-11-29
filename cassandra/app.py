@@ -72,7 +72,6 @@ def attempt_to_execute_command(command):
     if stderr_output:
         print(stderr_output.decode())
 
-
 def print_menu_for_mongo(collection):
     print('\n')
     menu_options = {
@@ -101,7 +100,6 @@ def print_menu_for_mongo(collection):
     
     elif choice == 1:
         # Get single by ID
-        collection = input("Enter the collection name (e.g., 'Posts'): ")
         object_id = input("Please enter the ID of the object: ")
         command += f"{collection} get -i {object_id}"
         print(f"Generated command: {command}")
@@ -160,8 +158,8 @@ def main():
         option = int(input('Enter your choice: '))
         if option == 0:
             model.bulk_insert(session)
-            model.print_all_users()
-            model.print_all_posts()
+            model.print_all_users(session)
+            model.print_all_posts(session)
         elif option == 1:
             user_id = uuid.UUID(input("Enter user ID (UUID format): "))
             model.get_user_activity(session, user_id)

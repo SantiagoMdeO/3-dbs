@@ -15,11 +15,11 @@ from model import PostUpdate
 
 
 # Set logger
-log = logging.getLogger()
-log.setLevel('INFO')
-handler = logging.FileHandler('post.log')
-handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s"))
-log.addHandler(handler)
+# log = logging.getLogger()
+# log.setLevel('INFO')
+# handler = logging.FileHandler('post.log')
+# handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s"))
+# log.addHandler(handler)
 
 # Read env vars related to API connection
 POSTS_API_URL = os.getenv("POSTS_API_URL", "http://localhost:8000")
@@ -113,7 +113,7 @@ def list_entities(collection, filter_params=None):
 
 
 def main():
-    log.info(f"Welcome to books catalog. App requests to: {POSTS_API_URL}")
+    #log.info(f"Welcome to books catalog. App requests to: {POSTS_API_URL}")
 
     parser = argparse.ArgumentParser()
     parser.add_argument("collection", choices=["posts", "likes", "comments", "highlights", "profile_visits", "mentions", "shares", "activity", "notifications"], help="Target collection")
