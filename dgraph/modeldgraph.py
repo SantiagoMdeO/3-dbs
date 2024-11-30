@@ -19,14 +19,6 @@ def set_schema(client):
         Blocked_after
     }
 
-    type post {
-        user
-        description
-        reach_count
-        reach_type
-        interaction
-    }
-
     type Follows_before {
         username
         followed_user_uid
@@ -35,12 +27,6 @@ def set_schema(client):
     type Follows_after {
         username
         followed_user_uid
-        when
-    }
-
-    type interaction {
-        type
-        user
         when
     }
 
@@ -53,11 +39,11 @@ def set_schema(client):
     username: string @index(trigram, hash) .
     follower_count: int .
     followed_user_uid: uid .
-    Follows_before: [uid] .
-    Blocked_after: [uid] .
+    Follows_before: [uid] @reverse .
+    Blocked_after: [uid] @reverse .
     interaction: [uid] .
     when: dateTime .
-    Follows_after: [uid] .
+    Follows_after: [uid] @reverse .
     user: uid .
     reach_count: int .
     reach_type: string .
@@ -145,139 +131,129 @@ def create_data(client):
         # Limpiar
         txn.discard()
 
-def search_user_by_prefix(client, prefix: str):
-    query = f"""
-    {{
-      users(func: has(username)) @filter(regex(username, "^{prefix}.*")) {{
-        uid
-        username
-      }}
-    }}
-    """
+def search_users_by_regex(client, prefix):
+    query = """
+    query search_users($regex: string) {
+        users(func: regexp(username, $regex)) {
+            uid
+            username
+        }
+    }"""
+    # Create the full regex string here
+    regex = f"/^{prefix}.*/i"
+    variables = {"$regex": regex}
+    res = client.txn(read_only=True).query(query, variables=variables)
+    result = json.loads(res.json)
+    print(json.dumps(result, indent=2))
+
+def search_user_by_exact_match(client, username):
+    query = """query search_user($username: string) {
+        user(func: eq(username, $username)) {
+            uid
+            username
+        }
+    }"""
+
+    variables = {"$username": username}
+    res = client.txn(read_only=True).query(query, variables=variables)
+    result = json.loads(res.json)
+    print(json.dumps(result, indent=2))
+
+def query_follows(client, username):
+    query = """
+    query getUserFollows($username: string) {
+        user(func: eq(username, $username)) {
+            uid
+            username
+            follows: Follows_before {
+                uid
+                username
+            }
+        }
+    }"""
     
-    response = client.txn(read_only=True).query(query)
-    result = json.loads(response.json)
+    variables = {"$username": username}
+    res = client.txn(read_only=True).query(query, variables=variables)
+    result = json.loads(res.json)
+    print("follows before registration to app:")
     print(json.dumps(result, indent=2))
-
-
-# 3. Follow Tracking Before Registration
-def query_follow_tracking_before(client):
     query = """
-    {
-        followsBefore(func: has(Follows_before)) {
+    query getUserFollows($username: string) {
+        user(func: eq(username, $username)) {
             uid
             username
-            Follows_before {
-                uid
-                username
-            }
-        }
-    }
-    """
-    response = client.txn(read_only=True).query(query)
-    result = json.loads(response.json)
-    print(json.dumps(result, indent=2))
-
-# 4. New Follower Tracking
-def query_new_follower_tracking(client):
-    query = """
-    {
-        followsAfter(func: has(Follows_after)) {
-            uid
-            username
-            Follows_after @facets {
+            follows: Follows_after {
                 uid
                 username
                 when
             }
         }
-    }
-    """
-    response = client.txn(read_only=True).query(query)
-    result = json.loads(response.json)
+    }"""
+    
+    variables = {"$username": username}
+    res = client.txn(read_only=True).query(query, variables=variables)
+    result = json.loads(res.json)
+    print("follows after registration to app:")
     print(json.dumps(result, indent=2))
 
-# 5. Unfollow Tracking
-def query_unfollow_tracking(client):
+def query_followers(client, username):
     query = """
-    {
-        unfollows(func: has(Blocked_after)) {
+    query getUserFollows($username: string) {
+        user(func: eq(username, $username)) {
             uid
             username
-            Blocked_after @facets {
+            followers: ~Follows_before {
                 uid
-                when
+                username
             }
         }
-    }
-    """
-    response = client.txn(read_only=True).query(query)
-    result = json.loads(response.json)
+    }"""
+    
+    variables = {"$username": username}
+    res = client.txn(read_only=True).query(query, variables=variables)
+    result = json.loads(res.json)
+    print("follows before registration to app:")
     print(json.dumps(result, indent=2))
 
-# 6. Follower Growth Analytics
-# def query_follower_growth_analytics(client):
 
-# 7. Content Reach Analysis
-def query_content_reach_analysis(client):
     query = """
-    {
-        reach(func: has(reach_count)) {
-            uid
-            description
-            reach_count
-            reach_type
-            interaction {
-                type
-            }
-        }
-    }
-    """
-    response = client.txn(read_only=True).query(query)
-    result = json.loads(response.json)
-    print(json.dumps(result, indent=2))
-
-# 8. Profile Interaction Mapping
-def query_profile_interaction_mapping(client):
-    query = """
-    {
-        interactions(func: has(interaction)) {
+    query getUserFollows($username: string) {
+        user(func: eq(username, $username)) {
             uid
             username
-            interaction @facets {
-                type
-                when
-                user {
-                    uid
-                    username
-                }
-            }
-        }
-    }
-    """
-    response = client.txn(read_only=True).query(query)
-    result = json.loads(response.json)
-    print(json.dumps(result, indent=2))
-
-# 9. User Block Tracking
-def query_user_block_tracking(client):
-    query = """
-    {
-        blocked(func: has(Blocked_after)) {
-            uid
-            username
-            Blocked_after @facets {
+            followers: ~Follows_after {
                 uid
+                username
                 when
             }
         }
-    }
-    """
-    response = client.txn(read_only=True).query(query)
-    result = json.loads(response.json)
+    }"""
+    
+    variables = {"$username": username}
+    res = client.txn(read_only=True).query(query, variables=variables)
+    result = json.loads(res.json)
+    print("follows after registration to app:")
     print(json.dumps(result, indent=2))
 
+def query_whoBlockedMe(client, username):
+    query = """
+    query getUserFollows($username: string) {
+        user(func: eq(username, $username)) {
+            uid
+            username
+            followers: ~Blocked_after {
+                uid
+                username
+                when
+            }
+        }
+    }"""
+    
+    variables = {"$username": username}
+    res = client.txn(read_only=True).query(query, variables=variables)
+    result = json.loads(res.json)
+    print("follows before registration to app:")
+    print(json.dumps(result, indent=2))
 
-# 10. Delete todito
 def drop_all(client):
     return client.alter(pydgraph.Operation(drop_all=True))

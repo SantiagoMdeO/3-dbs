@@ -79,6 +79,10 @@ def main():
 
         elif option == 9:
             modeldgraph.query_user_block_tracking(client)
+        elif option == 11:
+            modeldgraph.search_users_by_regex(client, "tess")
+        elif option == 12:
+            modeldgraph.search_user_by_exact_match(client, "Tess2")
 
         elif option == 10:
             close_client_stub(client_stub)

@@ -80,14 +80,13 @@ def print_menu():
         17: "MongoDB: Shares Collection",
         18: "MongoDB: Notifications Collection",
 
-        20: "populate data",
-        21: "Follow Tracking Before Registration",
-        22: "New Follower Tracking",
-        23: "Unfollow Tracking",
-        24: "Follower Growth Analytics",
-        25: "Content Reach Analysis",
-        26: "Profile Interaction Mapping",
-        27: "User Block Tracking",
+        21: "Create Data",
+        22: "Search Users by Regex",
+        23: "Search User by Exact Match",
+        24: "Query Who You Follow",
+        25: "Query Who Follows You",
+        26: "Query Who Blocked You",
+        27: "Drop All Data",
         28: "Exit"
     }
     for key in mm_options.keys():
@@ -250,31 +249,25 @@ def main():
             while(True):
                 if print_menu_for_mongo(choices[int(option)-11]):
                     break
-        elif option == 20:
-            model.create_data(client)
-            print("Data inserted successfully.\n")
-
         elif option == 21:
-            model.query_follow_tracking_before(client)
-
+            modeldgraph.create_data(client)
         elif option == 22:
-            model.query_new_follower_tracking(client)
-        
+            prefix = input("Enter the regex prefix to search: ")
+            modeldgraph.search_users_by_regex(client, prefix)
         elif option == 23:
-            model.query_unfollow_tracking(client)
-
+            username = input("Enter the username for exact match search: ")
+            modeldgraph.search_user_by_exact_match(client, username)
         elif option == 24:
-            # model.query_follower_growth_analytics(client)
-            print("No ah\n")
-
+            username = input("Enter the username to query follows: ")
+            modeldgraph.query_follows(client, username)
         elif option == 25:
-            model.query_content_reach_analysis(client)
-
+            username = input("Enter the username to query followers: ")
+            modeldgraph.query_followers(client, username)
         elif option == 26:
-            model.query_profile_interaction_mapping(client)
-
+            username = input("Enter the username to query who blocked you: ")
+            modeldgraph.query_whoBlockedMe(client, username)
         elif option == 27:
-            model.query_user_block_tracking(client)
+            print(modeldgraph.drop_all(client))
 
         elif option == 28:
             close_client_stub(client_stub)

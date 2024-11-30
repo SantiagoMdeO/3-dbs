@@ -11,7 +11,6 @@ from routes.highlights import router as highlights_router
 from routes.profile_visits import router as profile_visits_router
 from routes.mentions import router as mentions_router
 from routes.shares import router as shares_router
-from routes.activity import router as activity_router
 from routes.notifications import router as notifications_router
 
 
@@ -49,7 +48,6 @@ routes = [
     ("profile_visits", profile_visits_router),
     ("mentions", mentions_router),
     ("shares", shares_router),
-    ("activity", activity_router),
     ("notifications", notifications_router),
 ]
 
