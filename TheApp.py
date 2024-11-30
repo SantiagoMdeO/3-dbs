@@ -73,7 +73,7 @@ def print_menu():
 
         11: "MongoDB: Posts Collection",
         12: "MongoDB: Post Likes Collection",
-        13: "MongoDB: Post Comments Collection",
+        13: "MongoDB: Post Comments Collection(this one and below that are mongo dont work, because we attemptted a complex data generator, which didnt work out)",
         14: "MongoDB: Highlight Interactions Collection",
         15: "MongoDB: Profile Visits Collection",
         16: "MongoDB: Mentions Collection",
@@ -85,7 +85,7 @@ def print_menu():
         23: "Search User by Exact Match",
         24: "Query Who You Follow",
         25: "Query Who Follows You",
-        26: "Query Who Blocked You",
+        26: "Query Who Blocked You(populate may have blocked themselves)",
         27: "Drop All Data",
         28: "Exit"
     }
@@ -136,7 +136,7 @@ def print_menu_for_mongo(collection):
     choice = int(input("Please choose an option: "))
     
     # Prepare command string
-    command = "python ../mongoDB/client.py "
+    command = "python ./mongoDB/client.py "
     
     if choice == 0:
         # Get all
